@@ -1,0 +1,13 @@
+{
+  "name": "textures-galleria",
+  "version": "1.0.0",
+  "description": "Textures Galleria — curtains & interior design, order-based site with admin panel.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

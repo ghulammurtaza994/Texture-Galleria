@@ -1,0 +1,29 @@
+[
+  {
+    "id": "seed-1",
+    "title": "Living Room Drapery — DHA Phase 5",
+    "description": "Floor-length velvet curtains in deep burgundy with a jute-trimmed pelmet, paired with walnut curtain rods.",
+    "material": "velvet",
+    "location": "DHA Phase 5, Lahore",
+    "image": "/images/blinds-1.jpg",
+    "addedAt": "2026-05-10T00:00:00.000Z"
+  },
+  {
+    "id": "seed-2",
+    "title": "Study Room Blinds — Gulberg",
+    "description": "Natural jute roman blinds with a walnut valance, designed for a home office with warm, textured light.",
+    "material": "jute",
+    "location": "Gulberg, Lahore",
+    "image": "/images/beds-2.jpg",
+    "addedAt": "2026-04-22T00:00:00.000Z"
+  },
+  {
+    "id": "seed-3",
+    "title": "Full Interior Fit-Out — Bahria Town",
+    "description": "Complete living and dining room design: sheesham furniture, emerald velvet upholstery, and jute area rugs.",
+    "material": "mixed",
+    "location": "Bahria Town, Lahore",
+    "image": "/images/full-interior-1.jpg",
+    "addedAt": "2026-03-15T00:00:00.000Z"
+  }
+]
