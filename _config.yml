@@ -1,0 +1,8 @@
+title: Ghulam Murtaza
+name: Ghulam Murtaza
+description: Web Developer & Designer Portfolio
+url: https://ghulammurtaza994.github.io
+baseurl: ""
+markdown: kramdown
+plugins:
+  - jekyll-seo-tag

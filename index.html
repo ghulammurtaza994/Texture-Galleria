@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ghulam Murtaza | Web Developer & Designer</title>
+    <meta
+      name="description"
+      content="Portfolio website of Ghulam Murtaza, a professional Web Developer and Designer creating modern, responsive websites and digital experiences."
+    />
+    <meta
+      name="keywords"
+      content="Ghulam Murtaza, Web Developer, Web Designer, Portfolio, HTML, CSS, JavaScript, Responsive Website, Lahore Pakistan"
+    />
+    <meta name="author" content="Ghulam Murtaza" />
+    <link rel="canonical" href="https://ghulammurtaza994.github.io/" />
+    <meta property="og:title" content="Ghulam Murtaza | Web Developer & Designer" />
+    <meta
+      property="og:description"
+      content="Professional portfolio showcasing modern web design, development, and digital solutions."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://ghulammurtaza994.github.io/" />
+    <meta
+      property="og:image"
+      content="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Ghulam Murtaza | Web Developer & Designer" />
+    <meta
+      name="twitter:description"
+      content="Professional portfolio showcasing modern web design, development, and digital solutions."
+    />
+    <style>
+      :root {
+        --bg: #07111f;
+        --bg-soft: #0f1d31;
+        --text: #f5f7fb;
+        --muted: #a9b4c5;
+        --accent: #4cc9f0;
+        --accent-2: #8b5cf6;
+        --border: rgba(255,255,255,0.12);
+        --shadow: 0 18px 45px rgba(0,0,0,0.25);
+      }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+        background: linear-gradient(135deg, var(--bg), var(--bg-soft));
+        color: var(--text);
+        line-height: 1.7;
+      }
+
+      a { color: inherit; text-decoration: none; }
+      img { max-width: 100%; display: block; }
+
+      .container {
+        width: min(1120px, calc(100% - 2rem));
+        margin: 0 auto;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        backdrop-filter: blur(14px);
+        background: rgba(7, 17, 31, 0.82);
+        border-bottom: 1px solid var(--border);
+        z-index: 10;
+      }
+
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+      }
+
+      .brand {
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        font-size: 1.05rem;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 1.2rem;
+        color: var(--muted);
+      }
+
+      .nav-links a:hover, .nav-links a:focus-visible {
+        color: var(--text);
+      }
+
+      .hero {
+        padding: 5rem 0 4rem;
+        display: grid;
+        gap: 2rem;
+        grid-template-columns: 1.2fr 0.8fr;
+        align-items: center;
+      }
+
+      .hero h1 {
+        font-size: clamp(2rem, 4vw, 3.5rem);
+        line-height: 1.12;
+        margin: 0 0 1rem;
+      }
+
+      .hero p { color: var(--muted); font-size: 1.05rem; }
+      .hero .highlight { color: var(--accent); }
+
+      .hero-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 0.9rem 1.2rem;
+        border-radius: 999px;
+        font-weight: 600;
+        transition: transform 0.2s ease, background 0.2s ease;
+      }
+
+      .btn:hover { transform: translateY(-2px); }
+      .btn-primary {
+        background: linear-gradient(90deg, var(--accent), var(--accent-2));
+        color: white;
+      }
+      .btn-secondary {
+        border: 1px solid var(--border);
+        color: var(--text);
+      }
+
+      .card {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        padding: 1.4rem;
+        box-shadow: var(--shadow);
+      }
+
+      .hero-card {
+        padding: 1.8rem;
+        background: linear-gradient(135deg, rgba(76,201,240,0.15), rgba(139,92,246,0.12));
+      }
+
+      .hero-card ul { padding-left: 1.1rem; color: var(--muted); }
+
+      section { padding: 4.3rem 0; }
+      .section-title {
+        font-size: 1.8rem;
+        margin-bottom: 0.6rem;
+      }
+      .section-subtitle { color: var(--muted); margin-bottom: 2rem; }
+
+      .grid {
+        display: grid;
+        gap: 1.25rem;
+      }
+
+      .services-grid, .about-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .service-card, .about-card {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 1.5rem;
+      }
+
+      .service-card h3, .about-card h3 { margin-top: 0; }
+      .service-card p, .about-card p { color: var(--muted); }
+
+      .contact-grid {
+        grid-template-columns: 0.95fr 1.05fr;
+        align-items: start;
+      }
+
+      form {
+        display: grid;
+        gap: 1rem;
+      }
+
+      label { font-weight: 600; }
+      input, textarea {
+        width: 100%;
+        padding: 0.9rem 1rem;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,0.06);
+        color: var(--text);
+      }
+
+      textarea { min-height: 120px; resize: vertical; }
+
+      .form-note { color: var(--muted); font-size: 0.95rem; }
+
+      footer {
+        border-top: 1px solid var(--border);
+        padding: 1.5rem 0 2rem;
+        color: var(--muted);
+      }
+
+      .footer-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .socials {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      @media (max-width: 800px) {
+        .hero, .services-grid, .about-grid, .contact-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .hero {
+          padding-top: 3rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <nav>
+          <a class="brand" href="#home">Ghulam Murtaza</a>
+          <div class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#about">About</a>
+            <a href="#services">Services</a>
+            <a href="#contact">Contact</a>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main id="home">
+      <section class="hero container">
+        <div>
+          <p class="highlight">Web Developer & Designer</p>
+          <h1>I build modern websites that look great and perform even better.</h1>
+          <p>
+            I create clean, responsive, and user-focused digital experiences for businesses,
+            personal brands, and creative projects.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#contact">Get In Touch</a>
+            <a class="btn btn-secondary" href="#services">Explore Services</a>
+          </div>
+        </div>
+        <div class="card hero-card">
+          <h3>What I offer</h3>
+          <ul>
+            <li>Modern portfolio and business websites</li>
+            <li>Responsive design for mobile and desktop</li>
+            <li>Fast, SEO-friendly development</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="about" class="container">
+        <h2 class="section-title">About Me</h2>
+        <p class="section-subtitle">
+          I am passionate about turning ideas into polished digital products that connect with people.
+        </p>
+        <div class="grid about-grid">
+          <article class="about-card">
+            <h3>Creative</h3>
+            <p>I focus on strong visuals, clear messaging, and memorable user experiences.</p>
+          </article>
+          <article class="about-card">
+            <h3>Technical</h3>
+            <p>I build websites using modern HTML, CSS, and JavaScript with clean, maintainable code.</p>
+          </article>
+          <article class="about-card">
+            <h3>Reliable</h3>
+            <p>I aim to deliver projects that are professional, responsive, and ready for growth.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="services" class="container">
+        <h2 class="section-title">Services</h2>
+        <p class="section-subtitle">Practical solutions for brands, startups, and personal portfolios.</p>
+        <div class="grid services-grid">
+          <article class="service-card">
+            <h3>Portfolio Websites</h3>
+            <p>Professional one-page or multi-page websites to showcase your work, skills, and achievements.</p>
+          </article>
+          <article class="service-card">
+            <h3>Business Websites</h3>
+            <p>Modern websites that strengthen your online presence and help customers find your services quickly.</p>
+          </article>
+          <article class="service-card">
+            <h3>UI/UX Design</h3>
+            <p>Thoughtful layouts and interfaces that make browsing smooth, attractive, and easy to use.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="contact" class="container">
+        <h2 class="section-title">Contact</h2>
+        <p class="section-subtitle">Let’s discuss your next project and build something impactful together.</p>
+        <div class="grid contact-grid">
+          <div class="card">
+            <h3>Reach out</h3>
+            <p>Email: <a href="mailto:ghulammurtaza994@gmail.com">ghulammurtaza994@gmail.com</a></p>
+            <p>Location: Lahore, Pakistan</p>
+            <p>Available for freelance projects and collaborations.</p>
+          </div>
+          <div class="card">
+            <form id="contactForm">
+              <label for="name">Name</label>
+              <input id="name" name="name" type="text" placeholder="Your name" required />
+
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" placeholder="you@example.com" required />
+
+              <label for="message">Message</label>
+              <textarea id="message" name="message" placeholder="Tell me about your project" required></textarea>
+
+              <button class="btn btn-primary" type="submit">Send Message</button>
+              <p class="form-note" id="formNote">This form uses client-side submission only. Please email me directly for urgent inquiries.</p>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container footer-row">
+        <p>© 2026 Ghulam Murtaza. All rights reserved.</p>
+        <div class="socials">
+          <a href="https://github.com/ghulammurtaza994" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">Instagram</a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const form = document.getElementById('contactForm');
+      const note = document.getElementById('formNote');
+
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        note.textContent = 'Thank you! Your message has been prepared locally. Please email me directly at ghulammurtaza994@gmail.com.';
+        form.reset();
+      });
+    </script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Ghulam Murtaza",
+        "jobTitle": "Web Developer & Designer",
+        "url": "https://ghulammurtaza994.github.io/",
+        "sameAs": [
+          "https://github.com/ghulammurtaza994",
+          "https://www.linkedin.com/"
+        ],
+        "description": "Professional web developer and designer creating modern, responsive, and SEO-friendly websites."
+      }
+    </script>
+  </body>
+</html>
