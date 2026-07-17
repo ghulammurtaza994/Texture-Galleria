@@ -6,29 +6,34 @@
 
 const fs = require('fs');
 const path = require('path');
-const crypto = require('crypto');
 
 function generateId() {
-  return 'id-' + Date.now().toString(36) + '-' + Math.random().toString(36).substr(2, 9);
+  return 'id-' + Date.now().toString(36) + '-' + Math.random().toString(36).substring(2, 11);
 }
 
 const PUBLIC_DIR = path.join(__dirname, '..', 'public');
-const DATA_DIR = path.join(__dirname, '..', 'data');
 const TMP_DIR = '/tmp/textures-galleria-data';
 const ORDERS_FILE = path.join(TMP_DIR, 'orders.json');
-const PORTFOLIO_FILE = path.join(DATA_DIR, 'portfolio.json');
+const PORTFOLIO_FILE = path.join(TMP_DIR, 'portfolio.json');
+const SEED_PORTFOLIO = path.join(__dirname, '..', 'data', 'portfolio.json');
 const ADMIN_KEY = process.env.ADMIN_KEY || 'change-this-passcode';
 const BUSINESS_SMS_TO = process.env.BUSINESS_SMS_TO || '03376184616';
 const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
 const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
 const TWILIO_FROM_NUMBER = process.env.TWILIO_FROM_NUMBER;
 
-// Ensure /tmp directory exists
+// Ensure /tmp directory exists and seed data from read-only source
 function ensureTmpDir() {
   try {
     if (!fs.existsSync(TMP_DIR)) {
       fs.mkdirSync(TMP_DIR, { recursive: true });
       console.log('[TMP] Created directory:', TMP_DIR);
+      // Seed portfolio from read-only data directory
+      if (fs.existsSync(SEED_PORTFOLIO)) {
+        const seedData = JSON.parse(fs.readFileSync(SEED_PORTFOLIO, 'utf8'));
+        fs.writeFileSync(PORTFOLIO_FILE, JSON.stringify(seedData, null, 2));
+        console.log('[TMP] Seeded portfolio data from', SEED_PORTFOLIO);
+      }
     }
   } catch (e) {
     console.error('[TMP] Failed to create temp directory:', e.message);
@@ -196,9 +201,17 @@ function validateOrder(o) {
 // ---------- request handler ----------
 
 module.exports = async (req, res) => {
-  const urlObj = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
-  const pathname = decodeURIComponent(urlObj.pathname);
-  const query = Object.fromEntries(urlObj.searchParams.entries());
+  // Parse URL safely - req.url is always the path+query on Vercel
+  const rawUrl = req.url || '/';
+  const qIndex = rawUrl.indexOf('?');
+  const pathname = decodeURIComponent(qIndex >= 0 ? rawUrl.substring(0, qIndex) : rawUrl);
+  const query = {};
+  if (qIndex >= 0) {
+    const searchParams = new URLSearchParams(rawUrl.substring(qIndex + 1));
+    for (const [k, v] of searchParams) {
+      query[k] = v;
+    }
+  }
 
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -255,8 +268,8 @@ module.exports = async (req, res) => {
         whatsappUrl: notification.whatsappUrl || buildWhatsAppUrl(order),
       });
     } catch (e) {
-      console.error('[ORDER] Error:', e.message);
-      return send(res, 400, { ok: false, errors: ['Could not process the order. Please try again.'] });
+      console.error('[ORDER] Error:', e.message, e.stack);
+      return send(res, 400, { ok: false, errors: ['Could not process the order. Please try again.', e.message] });
     }
   }
 
