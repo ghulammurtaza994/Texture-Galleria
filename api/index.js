@@ -28,12 +28,12 @@ function ensureTmpDir() {
     if (!fs.existsSync(TMP_DIR)) {
       fs.mkdirSync(TMP_DIR, { recursive: true });
       console.log('[TMP] Created directory:', TMP_DIR);
-      // Seed portfolio from read-only data directory
-      if (fs.existsSync(SEED_PORTFOLIO)) {
-        const seedData = JSON.parse(fs.readFileSync(SEED_PORTFOLIO, 'utf8'));
-        fs.writeFileSync(PORTFOLIO_FILE, JSON.stringify(seedData, null, 2));
-        console.log('[TMP] Seeded portfolio data from', SEED_PORTFOLIO);
-      }
+    }
+    // Always seed portfolio if it doesn't exist in /tmp
+    if (!fs.existsSync(PORTFOLIO_FILE) && fs.existsSync(SEED_PORTFOLIO)) {
+      const seedData = JSON.parse(fs.readFileSync(SEED_PORTFOLIO, 'utf8'));
+      fs.writeFileSync(PORTFOLIO_FILE, JSON.stringify(seedData, null, 2));
+      console.log('[TMP] Seeded portfolio data from', SEED_PORTFOLIO);
     }
   } catch (e) {
     console.error('[TMP] Failed to create temp directory:', e.message);
