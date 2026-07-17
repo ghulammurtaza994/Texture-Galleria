@@ -1,6 +1,7 @@
 /**
  * Textures Galleria — Vercel Serverless Function
  * Handles all API routes and static file serving for Vercel deployment.
+ * Uses /tmp for writable data storage (Vercel serverless limitation).
  */
 
 const fs = require('fs');
@@ -10,13 +11,25 @@ const url = require('url');
 
 const PUBLIC_DIR = path.join(__dirname, '..', 'public');
 const DATA_DIR = path.join(__dirname, '..', 'data');
-const ORDERS_FILE = path.join(DATA_DIR, 'orders.json');
+const TMP_DIR = '/tmp/textures-galleria-data';
+const ORDERS_FILE = path.join(TMP_DIR, 'orders.json');
 const PORTFOLIO_FILE = path.join(DATA_DIR, 'portfolio.json');
 const ADMIN_KEY = process.env.ADMIN_KEY || 'change-this-passcode';
 const BUSINESS_SMS_TO = process.env.BUSINESS_SMS_TO || '03376184616';
 const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
 const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
 const TWILIO_FROM_NUMBER = process.env.TWILIO_FROM_NUMBER;
+
+// Ensure /tmp directory exists
+function ensureTmpDir() {
+  try {
+    if (!fs.existsSync(TMP_DIR)) {
+      fs.mkdirSync(TMP_DIR, { recursive: true });
+    }
+  } catch (e) {
+    console.error('[TMP] Failed to create temp directory:', e.message);
+  }
+}
 
 // ---------- helpers ----------
 
@@ -29,7 +42,13 @@ function readJSON(file, fallback) {
 }
 
 function writeJSON(file, data) {
-  fs.writeFileSync(file, JSON.stringify(data, null, 2));
+  try {
+    ensureTmpDir();
+    fs.writeFileSync(file, JSON.stringify(data, null, 2));
+  } catch (e) {
+    console.error('[WRITE] Failed to write file:', e.message);
+    throw e;
+  }
 }
 
 function send(res, status, body, headers = {}) {
@@ -96,7 +115,10 @@ function buildOrderNotificationMessage(order) {
   const service = order.serviceType || 'custom service';
   const customerPhone = order.phone || 'Not provided';
   const details = order.details || 'No details provided';
-  return `New order received for ${service}.\nCustomer: ${order.name || 'Unknown'}\nPhone: ${customerPhone}\nDetails: ${details}`;
+  const space = order.space || 'Not specified';
+  const material = order.preferredMaterial || 'Not specified';
+  const budget = order.budget || 'Not specified';
+  return `🛒 *New Order Received!*\n\n👤 *Name:* ${order.name || 'Unknown'}\n📞 *Phone:* ${customerPhone}\n📧 *Email:* ${order.email || 'Not provided'}\n🔧 *Service:* ${service}\n🏠 *Space:* ${space}\n🧵 *Material:* ${material}\n💰 *Budget:* ${budget}\n📝 *Details:* ${details}`;
 }
 
 function buildWhatsAppUrl(order) {
@@ -111,7 +133,7 @@ function sendOrderNotification(order) {
 
   if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN || !TWILIO_FROM_NUMBER) {
     const whatsappUrl = buildWhatsAppUrl(order);
-    console.log(`[SMS] Twilio credentials not configured. WhatsApp URL: ${whatsappUrl}`);
+    console.log(`[SMS] Twilio not configured. WhatsApp URL: ${whatsappUrl}`);
     return Promise.resolve({ ok: true, skipped: true, whatsappUrl });
   }
 
@@ -144,13 +166,13 @@ function sendOrderNotification(order) {
           resolve({ ok: true });
         } else {
           console.error(`[SMS] Failed. Status: ${res.statusCode}. ${payload}`);
-          resolve({ ok: false, error: payload });
+          resolve({ ok: false, error: payload, whatsappUrl: buildWhatsAppUrl(order) });
         }
       });
     });
     req.on('error', (err) => {
       console.error('[SMS] Error:', err.message);
-      resolve({ ok: false, error: err.message });
+      resolve({ ok: false, error: err.message, whatsappUrl: buildWhatsAppUrl(order) });
     });
     req.write(body.toString());
     req.end();
@@ -217,15 +239,19 @@ module.exports = async (req, res) => {
       };
       orders.unshift(order);
       writeJSON(ORDERS_FILE, orders);
+      
+      // Send notification - always returns whatsappUrl even if Twilio fails
       const notification = await sendOrderNotification(order);
+      
       return send(res, 201, {
         ok: true,
-        message: 'Order received. We will contact you shortly.',
+        message: 'Order received! We will contact you shortly.',
         id: order.id,
-        whatsappUrl: notification.whatsappUrl,
+        whatsappUrl: notification.whatsappUrl || buildWhatsAppUrl(order),
       });
     } catch (e) {
-      return send(res, 400, { ok: false, errors: ['Could not read the submitted form.'] });
+      console.error('[ORDER] Error:', e.message);
+      return send(res, 400, { ok: false, errors: ['Could not process the order. Please try again.'] });
     }
   }
 
