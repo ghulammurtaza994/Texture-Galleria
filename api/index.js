@@ -7,7 +7,10 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const url = require('url');
+
+function generateId() {
+  return 'id-' + Date.now().toString(36) + '-' + Math.random().toString(36).substr(2, 9);
+}
 
 const PUBLIC_DIR = path.join(__dirname, '..', 'public');
 const DATA_DIR = path.join(__dirname, '..', 'data');
@@ -25,9 +28,11 @@ function ensureTmpDir() {
   try {
     if (!fs.existsSync(TMP_DIR)) {
       fs.mkdirSync(TMP_DIR, { recursive: true });
+      console.log('[TMP] Created directory:', TMP_DIR);
     }
   } catch (e) {
     console.error('[TMP] Failed to create temp directory:', e.message);
+    throw e;
   }
 }
 
@@ -191,9 +196,9 @@ function validateOrder(o) {
 // ---------- request handler ----------
 
 module.exports = async (req, res) => {
-  const parsed = url.parse(req.url, true);
-  const pathname = decodeURIComponent(parsed.pathname);
-  const query = parsed.query;
+  const urlObj = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+  const pathname = decodeURIComponent(urlObj.pathname);
+  const query = Object.fromEntries(urlObj.searchParams.entries());
 
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -225,7 +230,7 @@ module.exports = async (req, res) => {
 
       const orders = readJSON(ORDERS_FILE, []);
       const order = {
-        id: crypto.randomUUID(),
+        id: generateId(),
         name: body.name.trim(),
         phone: body.phone.trim(),
         email: (body.email || '').trim(),
@@ -293,7 +298,7 @@ module.exports = async (req, res) => {
       }
       const portfolio = readJSON(PORTFOLIO_FILE, []);
       const item = {
-        id: crypto.randomUUID(),
+        id: generateId(),
         title: body.title,
         description: body.description,
         material: body.material,
