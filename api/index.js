@@ -201,6 +201,9 @@ function validateOrder(o) {
 // ---------- request handler ----------
 
 module.exports = async (req, res) => {
+  // Ensure /tmp is ready and data is seeded
+  ensureTmpDir();
+
   // Parse URL safely - req.url is always the path+query on Vercel
   const rawUrl = req.url || '/';
   const qIndex = rawUrl.indexOf('?');
